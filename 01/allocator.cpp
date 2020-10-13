@@ -14,6 +14,9 @@ void Allocator::makeAllocator(size_t maxSize) {
         throw "Zero size";
     }
     try {
+        if (mem != nullptr) {
+            delete [] mem;
+        }
         mem = new char[maxSize];
         alloc_size = maxSize;
     }
@@ -25,8 +28,9 @@ void Allocator::makeAllocator(size_t maxSize) {
 
 char* Allocator::alloc(size_t size) {
     if (offset + size <= alloc_size && size != 0) {
+        char *ret = mem + offset;
         offset += size;
-        return mem + offset;
+        return ret;
     } else {
         return nullptr;
     }
@@ -44,3 +48,4 @@ Allocator::~Allocator() {
         delete [] mem;
     }
 };
+

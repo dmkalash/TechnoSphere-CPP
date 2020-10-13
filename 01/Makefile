@@ -1,17 +1,20 @@
 CC=g++
 FLAGS=-std=c++17 -Wall
-OUTNAME=test
+OUTNAME=prog
 
-all: test
+all: res
 
-test: test.o allocator.o
+res: test.o allocator.o
 	$(CC) $(FLAGS) -o $(OUTNAME) test.o allocator.o
 
 test.o: test.cpp
 	$(CC) $(FLAGS) -c test.cpp
 
-allocator: allocator.cpp allocator.h
-	$(CC) $(FLAGS) allocator.cpp -o allocator
+allocator.o: allocator.cpp allocator.h
+	$(CC) $(FLAGS) allocator.cpp -c
+
+test: res
+	./$(OUTNAME)
 
 clean:
 	rm -f *.o $(OUTNAME)

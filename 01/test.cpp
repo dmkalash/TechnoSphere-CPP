@@ -94,13 +94,19 @@ void DefaultGetPointersTest() {
         if (t1 == nullptr) {
             throw -1;
         }
-        t1[0] = 'h';
+        t1[0] = 'a';
+        t1[49] = 'a';
 
         char *t2 = alloc.alloc(50);
         if (t2 == nullptr) {
             throw -1;
         }
-        t2[0] = 'h';
+        t2[0] = 'b';
+        t2[49] = 'b';
+
+        if (t1[0] != 'a' || t2[0] != 'b' || t1[0] != 'a' || t2[49] != 'b') {
+            throw -1;
+        }
     }
     catch (...) {
         std::cout << "Test " << test_num << ": FAILED" << std::endl;
@@ -189,6 +195,56 @@ void FirstOversizeGetPointersTest() {
 }
 
 
+void TwiceAllocatorMakeTest() {
+    constexpr size_t test_num = 11;
+    try {
+        size_t maxSize = 10;
+        Allocator alloc;
+        alloc.makeAllocator(maxSize);
+        alloc.makeAllocator(maxSize);
+        std::cout << "Test " << test_num << ": OK" << std::endl;
+    }
+    catch (...) {
+        std::cout << "Test " << test_num << ": FAILED" << std::endl;
+    }
+}
+
+
+void SeveralAllocTest() {
+    constexpr size_t test_num = 12;
+    try {
+        Allocator alloc;
+        alloc.makeAllocator(30);
+        char *t1 = alloc.alloc(10);
+        if (t1 == nullptr) {
+            throw -1;
+        }
+        t1[0] = 'a';
+
+        char *t2 = alloc.alloc(10);
+        if (t2 == nullptr) {
+            throw -1;
+        }
+        t2[0] = 'b';
+
+        char *t3 = alloc.alloc(10);
+        if (t3 == nullptr) {
+            throw -1;
+        }
+        t3[0] = 'c';
+
+        if (t1[0] != 'a' || t2[0] != 'b' || t3[0] != 'c') {
+            throw -1;
+        }
+    }
+    catch (...) {
+        std::cout << "Test " << test_num << ": FAILED" << std::endl;
+        return;
+    }
+    std::cout << "Test " << test_num << ": OK" << std::endl;
+}
+
+
 int main() {
     AllocatorCreateAndDeleteTest();
     DefaultAllocationTest();
@@ -200,5 +256,7 @@ int main() {
     NullSizeGetPointersTest();
     AfterNullSizeGetPointersTest();
     FirstOversizeGetPointersTest();
+    TwiceAllocatorMakeTest();
+    SeveralAllocTest();
     return 0;
 }
