@@ -29,7 +29,7 @@ public:
 class Matrix {
     size_t rows_ = 0;
     size_t cols_ = 0;
-    int *data_ = nullptr; // заменить на int32_t
+    int *data_ = nullptr;
 public:
     Matrix(size_t rows, size_t cols);
     Matrix(const Matrix &a);

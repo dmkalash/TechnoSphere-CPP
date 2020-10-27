@@ -1,6 +1,6 @@
 #include <exception>
 #include <new>
-#include <iostream> // убрать
+
 #include "matrix.h"
 
 
@@ -26,7 +26,7 @@ Matrix::Matrix(const Matrix &a)
         throw std::bad_alloc();
     }
 
-    for (size_t i = 0; i < rows_ * cols_; i++) { // мб переполнение
+    for (size_t i = 0; i < rows_ * cols_; i++) {
         data_[i] = a.data_[i];
     }
 }
@@ -86,7 +86,7 @@ bool Matrix::operator != (const Matrix &b) const
 void Matrix::operator *= (int c)
 {
     for (int i = 0; i < rows_ * cols_; i++) {
-        this->data_[i] *= c; // мб переполнение
+        this->data_[i] *= c;
     }
 }
 
@@ -118,7 +118,7 @@ std::ostream & operator << (std::ostream &ostream, const Matrix &matrix)
     return ostream;
 }
 
-////////////////////////////
+
 
 FirstBracketProxy::FirstBracketProxy(int *data, size_t size) : data_(data), size_(size) {}
 
@@ -131,7 +131,7 @@ SecondBracketProxy FirstBracketProxy::operator [] (size_t ind)
     return SecondBracketProxy(data_[ind]);
 }
 
-////////////////////////////
+
 
 SecondBracketProxy::SecondBracketProxy(int &val) : val_(val) {}
 
