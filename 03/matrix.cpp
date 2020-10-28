@@ -10,9 +10,6 @@ Matrix::Matrix(size_t rows, size_t cols) : rows_(rows), cols_(cols)
         throw std::string("Null dimensions not allowed");
     }
     data_ = new int[rows_ * cols_];
-    if (!data_) {
-        throw std::bad_alloc();
-    }
 }
 
 
@@ -22,9 +19,6 @@ Matrix::Matrix(const Matrix &a)
     rows_ = size.first;
     cols_ = size.second;
     data_ = new int[rows_ * cols_];
-    if (!data_) {
-        throw std::bad_alloc();
-    }
 
     for (size_t i = 0; i < rows_ * cols_; i++) {
         data_[i] = a.data_[i];
@@ -83,11 +77,27 @@ bool Matrix::operator != (const Matrix &b) const
 }
 
 
-void Matrix::operator *= (int c)
+Matrix & Matrix::operator = (const Matrix &b)
+{
+    rows_ = b.get_rows();
+    cols_ = b.get_columns();
+
+    delete [] data_;
+    data_ = new int[rows_ * cols_];
+
+    for (size_t i = 0; i < rows_ * cols_; i++) {
+        data_[i] = b.data_[i];
+    }
+    return *this;
+}
+
+
+Matrix & Matrix::operator *= (int c)
 {
     for (int i = 0; i < rows_ * cols_; i++) {
         this->data_[i] *= c;
     }
+    return *this;
 }
 
 
@@ -97,12 +107,21 @@ Matrix::~Matrix()
 }
 
 
-FirstBracketProxy Matrix::operator [] (size_t ind)
+BracketProxy Matrix::operator [] (size_t ind)
 {
     if (this->rows_ < ind) {
         throw std::out_of_range("Out of range for axis 0");
     }
-    return FirstBracketProxy(data_ + ind * cols_, cols_);
+    return BracketProxy(data_ + ind * cols_, cols_);
+}
+
+
+const BracketProxy Matrix::operator [] (size_t ind) const
+{
+    if (this->rows_ < ind) {
+        throw std::out_of_range("Out of range for axis 0");
+    }
+    return BracketProxy(data_ + ind * cols_, cols_);
 }
 
 
@@ -119,39 +138,23 @@ std::ostream & operator << (std::ostream &ostream, const Matrix &matrix)
 }
 
 
+BracketProxy::BracketProxy(int *data, size_t size) : data_(data), size_(size) {}
 
-FirstBracketProxy::FirstBracketProxy(int *data, size_t size) : data_(data), size_(size) {}
 
-
-SecondBracketProxy FirstBracketProxy::operator [] (size_t ind)
+int & BracketProxy::operator [] (size_t ind)
 {
     if (ind >= size_) {
         throw std::out_of_range("Out of range for axis 1");
     }
-    return SecondBracketProxy(data_[ind]);
+    return data_[ind];
 }
 
 
-
-SecondBracketProxy::SecondBracketProxy(int &val) : val_(val) {}
-
-
-int SecondBracketProxy::operator = (int new_val)
+const int BracketProxy::operator [] (size_t ind) const
 {
-    val_ = new_val;
-    return val_;
+    if (ind >= size_) {
+        throw std::out_of_range("Out of range for axis 1");
+    }
+    return data_[ind];
 }
 
-
-int SecondBracketProxy::operator = (const SecondBracketProxy &new_val)
-{
-    val_ = new_val.val_;
-    return val_;
-}
-
-
-SecondBracketProxy::operator int() const
-{
-    int new_int = val_;
-    return new_int;
-}

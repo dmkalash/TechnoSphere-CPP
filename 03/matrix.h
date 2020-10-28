@@ -2,27 +2,17 @@
 #include <ostream>
 
 
-class SecondBracketProxy;
-class FirstBracketProxy;
+class BracketProxy;
 class Matrix;
 
 
-class SecondBracketProxy {
-    int &val_;
-public:
-    SecondBracketProxy(int &val);
-    int operator = (int new_val);
-    int operator = (const SecondBracketProxy &new_val);
-    operator int() const;
-};
-
-
-class FirstBracketProxy {
+class BracketProxy {
     int *data_ = nullptr;
     size_t size_ = 0;
 public:
-    FirstBracketProxy(int *data, size_t size);
-    SecondBracketProxy operator [] (size_t col);
+    BracketProxy(int *data, size_t size);
+    int & operator [] (size_t ind);
+    const int operator [] (size_t ind) const;
 };
 
 
@@ -39,8 +29,10 @@ public:
     Matrix operator + (const Matrix &b) const;
     bool operator == (const Matrix &b) const;
     bool operator != (const Matrix &b) const;
-    FirstBracketProxy operator [] (size_t ind);
-    void operator *= (int c);
+    Matrix & operator = (const Matrix &b);
+    BracketProxy operator [] (size_t ind);
+    const BracketProxy operator [] (size_t ind) const;
+    Matrix & operator *= (int c);
     ~Matrix();
     friend std::ostream & operator << (std::ostream &ostream, const Matrix &matrix);
 };
