@@ -79,6 +79,10 @@ bool Matrix::operator != (const Matrix &b) const
 
 Matrix & Matrix::operator = (const Matrix &b)
 {
+    if (this == &b) {
+        return *this;
+    }
+
     rows_ = b.get_rows();
     cols_ = b.get_columns();
 
