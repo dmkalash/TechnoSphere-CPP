@@ -14,7 +14,7 @@ Error Serializer::save(T& object)
 
 
 template <typename T, class... ArgsT>
-Error Serializer::operator()(T arg, ArgsT... args)
+Error Serializer::operator()(T arg, ArgsT... args) // по ссылке?
 {
     Error res = (*this)(arg);
     if (res == Error::CorruptedArchive) {
