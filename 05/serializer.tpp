@@ -97,9 +97,21 @@ Error Deserializer::operator()(bool &arg)
 
 Error Deserializer::operator()(uint64_t &arg)
 {
-    if (in_ >> arg) {
-        return Error::NoError;
-    } else {
+    std::string tmp;
+    in_ >> tmp;
+    bool found_minus = false;
+    if (tmp.find('-') != std::string::npos) {
+        found_minus = true;
+    }
+    try {
+        arg = std::stoull(tmp);
+        if (found_minus && arg != 0) {
+            return Error::CorruptedArchive;
+        }
+    } catch (std::invalid_argument) {
+        return Error::CorruptedArchive;
+    } catch (std::out_of_range) {
         return Error::CorruptedArchive;
     }
+    return Error::NoError;
 }

@@ -526,6 +526,58 @@ void deser_few_bad_stream_save_string_test()
 }
 
 
+void deser_bad_stream_test()
+{
+    try {
+        std::stringstream stream;
+        stream << "^   ";
+
+        Deserializer deser(stream);
+
+        Data1 x;
+        Error er = deser.load(x);
+
+        if (er != Error::CorruptedArchive) {
+            throw -1;
+        }
+
+        std::stringstream stream1;
+        stream1 << " -005 ";
+        Deserializer deser1(stream1);
+
+        er = deser1.load(x);
+
+        if (er != Error::CorruptedArchive) {
+            throw -1;
+        }
+
+        std::stringstream stream2;
+        stream2 << " -00 ";
+        Deserializer deser2(stream2);
+
+        er = deser2.load(x);
+
+        if (er == Error::CorruptedArchive || x.a != 0) {
+            throw -1;
+        }
+
+        std::stringstream stream3;
+        stream3 << " 99999999999999999999999999999999999999999999999 ";
+        Deserializer deser3(stream3);
+
+        er = deser3.load(x);
+
+        if (er != Error::CorruptedArchive) {
+            throw -1;
+        }
+
+        std::cout << "OK\n";
+    } catch (...) {
+        std::cout << "FAILED\n";
+    }
+}
+
+
 int main()
 {
     ser_creating_string_test();
@@ -549,5 +601,6 @@ int main()
     deser_b_bad_stream_save_string_test();
     deser_u_bad_stream_save_string_test();
     deser_few_bad_stream_save_string_test();
+    deser_bad_stream_test();
     return 0;
 }
