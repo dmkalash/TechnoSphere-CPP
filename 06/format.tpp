@@ -49,18 +49,18 @@ namespace Format
     }
 
     template<class T, class... ArgsT>
-    std::string format(const std::string &s, T &&arg, ArgsT &&... args)
+    std::string format(const std::string &s, const T &arg, const ArgsT &... args)
     {
         std::vector<std::string> params;
-        return hformat_(s, params, std::forward<T>(arg), std::forward<ArgsT>(args)...);
+        return hformat_(s, params, std::forward<const T &>(arg), std::forward<const ArgsT &>(args)...);
     }
 
 
     template<class T, class... ArgsT>
-    std::string hformat_(const std::string &s, std::vector<std::string> &params, T &&arg, ArgsT &&... args)
+    std::string hformat_(const std::string &s, std::vector<std::string> &params, const T &arg, const ArgsT &... args)
     {
         params.push_back(template_to_string(arg));
-        return hformat_(s, params, std::forward<ArgsT>(args)...);
+        return hformat_(s, params, std::forward<const ArgsT &>(args)...);
     }
 
 
@@ -100,7 +100,7 @@ namespace Format
             throw ValueError();
         }
         if (non_digit) {
-            throw KeyError();
+            throw KeyError("keyerror");
         }
 
         return key;

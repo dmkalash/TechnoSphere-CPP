@@ -11,7 +11,7 @@ namespace Format {
     public:
         KeyError();
         KeyError(const std::string &error);
-        const char *what() const noexcept;
+        const char *what() const noexcept override;
     };
 
 
@@ -20,7 +20,7 @@ namespace Format {
     public:
         IndexError();
         IndexError(const std::string &error);
-        const char *what() const noexcept;
+        const char *what() const noexcept override;
     };
 
 
@@ -29,7 +29,7 @@ namespace Format {
     public:
         ValueError();
         ValueError(const std::string &error);
-        const char *what() const noexcept;
+        const char *what() const noexcept override;
     };
 
 
@@ -39,10 +39,10 @@ namespace Format {
     std::string format(const std::string &s);
 
     template<class T, class... ArgsT>
-    std::string format(const std::string &s, T &&arg, ArgsT &&... args);
+    std::string format(const std::string &s, const T &arg, const ArgsT &... args);
 
     template<class T, class... ArgsT>
-    std::string hformat_(const std::string &s, std::vector<std::string> &params, T &&arg, ArgsT &&... args);
+    std::string hformat_(const std::string &s, std::vector<std::string> &params, const T &arg, const ArgsT &... args);
 
     std::string hformat_(const std::string &s, const std::vector<std::string> &params);
 

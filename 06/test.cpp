@@ -114,7 +114,11 @@ void errors_format_test()
 
         try {
             text = format("{-}", 1);
-        } catch(const KeyError &e) {}
+        } catch(const KeyError &e) {
+            if (std::string(e.what()) != std::string("keyerror")) {
+                throw -1;
+            }
+        }
 
         try {
             text = format("{}", 1, 2, 3);
