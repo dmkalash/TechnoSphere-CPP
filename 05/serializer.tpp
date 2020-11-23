@@ -14,18 +14,18 @@ Error Serializer::save(T& object)
 
 
 template <typename T, class... ArgsT>
-Error Serializer::operator()(T arg, ArgsT... args) // по ссылке?
+Error Serializer::operator()(const T &arg, const ArgsT & ...args)
 {
     Error res = (*this)(arg);
     if (res == Error::CorruptedArchive) {
         return res;
     }
-    return (*this)(std::forward<ArgsT>(args)...);
+    return (*this)(std::forward<const ArgsT &>(args)...);
 }
 
 
 template <typename T>
-Error Serializer::operator()(T arg)
+Error Serializer::operator()(const T &arg)
 {
     throw std::bad_typeid();
 }
@@ -108,9 +108,9 @@ Error Deserializer::operator()(uint64_t &arg)
         if (found_minus && arg != 0) {
             return Error::CorruptedArchive;
         }
-    } catch (std::invalid_argument) {
+    } catch (const std::invalid_argument &) {
         return Error::CorruptedArchive;
-    } catch (std::out_of_range) {
+    } catch (const std::out_of_range &) {
         return Error::CorruptedArchive;
     }
     return Error::NoError;

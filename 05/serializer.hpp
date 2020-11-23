@@ -20,10 +20,10 @@ public:
     Error save(T& object);
 
     template <typename T, class... ArgsT>
-    Error operator()(T arg, ArgsT... args);
+    Error operator()(const T &arg, const ArgsT & ...args);
 
     template <typename T>
-    Error operator()(T arg);
+    Error operator()(const T &arg);
 
     Error operator()(bool arg);
     Error operator()(uint64_t arg);

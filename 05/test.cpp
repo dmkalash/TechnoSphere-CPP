@@ -268,7 +268,7 @@ void ser_bad_type_save_string_test()
         Error er = serializer.save(x);
 
         std::cout << "FAILED\n";
-    } catch (std::bad_typeid &e) {
+    } catch (const std::bad_typeid &e) {
         std::cout << "OK: unexpected type\n";
     } catch (...) {
         std::cout << "FAILED\n";
@@ -432,7 +432,7 @@ void deser_bad_type_save_string_test()
         er = deser.load(y);
 
         std::cout << "FAILED\n";
-    } catch (std::bad_typeid &e) {
+    } catch (const std::bad_typeid &e) {
         std::cout << "OK: unexpected type\n";
     } catch (...) {
         std::cout << "FAILED\n";
