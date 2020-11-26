@@ -20,7 +20,7 @@ Error Serializer::operator()(const T &arg, const ArgsT & ...args)
     if (res == Error::CorruptedArchive) {
         return res;
     }
-    return (*this)(std::forward<const ArgsT &>(args)...);
+    return (*this)(args...);
 }
 
 
@@ -69,7 +69,7 @@ Error Deserializer::operator()(T &arg, ArgsT &... args)
     if (res == Error::CorruptedArchive) {
         return res;
     }
-    return (*this)(std::forward<ArgsT &>(args)...);
+    return (*this)(args...);
 }
 
 
