@@ -47,7 +47,10 @@ void ThreadPool::process()
 
 ThreadPool::~ThreadPool()
 {
-    tasks.push({});
+    {
+        std::unique_lock <std::mutex> lock(m);
+        tasks.push({});
+    }
     notification.notify_all();
     for (int i = 0; i < size_; i++) {
         pool_[i].join();
