@@ -11,7 +11,7 @@ void test_vector_constructors()
         Vector<int> v2(10);
         Vector<int> v(0);
         std::cout << "FAILED\n";
-    } catch (std::invalid_argument &) {
+    } catch (const std::invalid_argument &) {
         std::cout << "OK\n";
     }
     catch(...) {
@@ -69,6 +69,37 @@ void test_api_with_alloc()
     t.emplace_back(10, 90);
     t.emplace_back(50, 50);
     assert(t.size() == 2 && t[0].sum() == 100 && t[1].sum() == 100);
+
+    t.clear();
+    auto tt = tmp(5,5);
+    t.push_back(std::move(tt));
+    assert(t[0].sum() == 10);
+
+    Vector<int> c1(10);
+    c1[0] = 3;
+    Vector<int> c2(c1);
+    assert(c2[0] == 3);
+
+    Vector<int> c3(10);
+    c3[0] = 3;
+    Vector<int> c4(std::move(c3));
+    assert(c4[0] == 3);
+
+    Vector<int> c5(10);
+    c5[0] = 3;
+    c5[1] = 0;
+    Vector<int> c6;
+    c6 = c5;
+    c6[1] = 1;
+    assert(c6[0] == 3 && c6[1] == 1 && c5[0] == 3 && c5[1] == 0);
+
+    Vector<int> c7(10);
+    c7[0] = 3;
+    c7[1] = 0;
+    Vector<int> c8;
+    c8 = std::move(c7);
+    c8[1] = 1;
+    assert(c8[0] == 3 && c8[1] == 1);
 
     std::cout << "OK\n";
 }

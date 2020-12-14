@@ -37,7 +37,51 @@ public:
     }
 
 
-    size_type size()
+    Vector(const Vector &b) : size_(b.size_), capacity_(b.capacity_)
+    {
+        alloc = allocator();
+        data = alloc.allocate(capacity_);
+        for (size_t i = 0; i < size_; i++) {
+            data[i] = b.data[i];
+        }
+    }
+
+
+    Vector(Vector &&b) : size_(b.size_), capacity_(b.capacity_)
+    {
+        alloc = allocator();
+        b.size_ = b.capacity_ = 0;
+        data = b.data;
+        b.data = nullptr;
+    }
+
+
+    Vector & operator = (const Vector &b)
+    {
+        alloc = allocator();
+        size_ = b.size_;
+        capacity_ = b.capacity_;
+
+        data = alloc.allocate(capacity_);
+        for (size_t i = 0; i < size_; i++) {
+            data[i] = b.data[i];
+        }
+        return *this;
+    }
+
+
+    Vector & operator = (Vector &&b)
+    {
+        alloc = allocator();
+        size_ = b.size_;
+        capacity_ = b.capacity_;
+        b.size_ = b.capacity_ = 0;
+        data = b.data;
+        b.data = nullptr;
+        return *this;
+    }
+
+    size_type size() const
     {
         return size_;
     }
@@ -49,19 +93,25 @@ public:
     }
 
 
-    size_type capacity()
+    size_type capacity() const
     {
         return capacity_;
     }
 
 
-    size_type empty()
+    size_type empty() const
     {
         return size_ == 0;
     }
 
 
     reference operator [](size_type j)
+    {
+        return data[j];
+    }
+
+
+    const_reference operator [](size_type j) const
     {
         return data[j];
     }
@@ -100,6 +150,12 @@ public:
     }
 
 
+    void push_back(T &&elem)
+    {
+        data = alloc.add(data, std::forward<T>(elem), size_, capacity_);
+    }
+
+
     void pop_back()
     {
         if (size_ == 0) {
@@ -116,22 +172,22 @@ public:
     }
 
 
-    Iterator<T> begin()
+    Iterator<T> begin() const
     {
         return Iterator<T>(data);
     }
 
-    Iterator<T> end()
+    Iterator<T> end() const
     {
         return Iterator(data + size_);
     }
 
-    ReverseIterator<T> rbegin()
+    ReverseIterator<T> rbegin() const
     {
         return ReverseIterator(data + size_ - 1);
     }
 
-    ReverseIterator<T> rend()
+    ReverseIterator<T> rend() const
     {
         return ReverseIterator(data - 1);
     }
