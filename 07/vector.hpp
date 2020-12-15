@@ -58,10 +58,9 @@ public:
 
     Vector & operator = (const Vector &b)
     {
-        alloc = allocator();
+        alloc.deallocate(data, capacity_);
         size_ = b.size_;
         capacity_ = b.capacity_;
-
         data = alloc.allocate(capacity_);
         for (size_t i = 0; i < size_; i++) {
             data[i] = b.data[i];
@@ -72,7 +71,7 @@ public:
 
     Vector & operator = (Vector &&b)
     {
-        alloc = allocator();
+        alloc.deallocate(data, capacity_);
         size_ = b.size_;
         capacity_ = b.capacity_;
         b.size_ = b.capacity_ = 0;
